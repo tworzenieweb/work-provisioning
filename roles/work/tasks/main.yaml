@@ -1,0 +1,29 @@
+- name: install vagrant required packages
+  action: apt pkg={{item}} state=installed
+  with_items:
+    - zlib1g-dev
+    - zlib1g-dbg
+    - zlib1g-dev
+    - zlibc
+
+- name: download latest vagrant
+  get_url:
+    url: https://releases.hashicorp.com/vagrant/1.9.5/vagrant_1.9.5_x86_64.deb?_ga=2.69666519.674422801.1495898450-420092385.1495898450
+    dest: "/home/{{ developmentUser }}/vagrant.deb"
+    owner: "{{ developmentUser }}"
+    group: "{{ developmentUser }}"
+
+- name: install latest vagrant
+  apt:
+    deb: "/home/{{ developmentUser }}/vagrant.deb"
+
+- name: install vagrant plugins
+  command: "vagrant plugin install vagrant-vbguest vagrant-share vagrant-ansible-local"
+  args:
+    chdir: /home/{{ developmentUser }}/work
+
+
+- name: add standard vagrant box
+  command: "vagrant box add http://www.jobleadshh.de/provisioning/debian_jessie_base.box --name jobleadsDev_Debian_Jessie"
+  args:
+    chdir: /home/{{ developmentUser }}/work

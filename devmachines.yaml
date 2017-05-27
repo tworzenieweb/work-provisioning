@@ -1,0 +1,11 @@
+- hosts: devmachines
+
+  vars_files:
+    - vars.yaml
+    - vars.local.yaml
+
+  become: yes
+
+  roles:
+#    - role: common
+    - role: work
