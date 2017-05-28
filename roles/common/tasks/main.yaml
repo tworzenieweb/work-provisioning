@@ -1,3 +1,14 @@
+- name: Add atom texteditor
+  apt_repository:
+    repo: ppa:webupd8team/atom
+    update_cache: true
+
+- name: Add canonical repository
+  apt_repository:
+    repo: deb http://archive.canonical.com/ precise partner
+    update_cache: true
+    state: present
+
 - name: Install list of packages
   action: apt pkg={{item}} state=installed
   with_items:
@@ -15,16 +26,11 @@
    - atop
    - ncdu
    - virtualbox
-- name: Add canonical repository
-  apt_repository:
-    repo: deb http://archive.canonical.com/ precise partner
-    update_cache: true
-    state: present
-
-- name: Install adobe reader
-  apt:
-    name: adobereader-enu
-    state: present
+   - adobereader-enu
+   - atom
+   - openssh-server
+   - remmina
+   - xrdp
 
 - name: Remove canonical repository
   apt_repository:
@@ -36,11 +42,11 @@
     repo: https://github.com/robbyrussell/oh-my-zsh.git
     dest: "/home/{{ developmentUser }}/.oh-my-zsh"
   become_user: "{{ developmentUser }}"
-  
+
 
 - name: Copy .zshrc
   template: src=zsh.rc dest="/home/{{ developmentUser }}/.zshrc"
-  
+
 - name: Wget theme
   get_url:
     url: https://raw.githubusercontent.com/halfo/lambda-mod-zsh-theme/master/lambda-mod.zsh-theme
@@ -52,11 +58,11 @@
 
 - name: Set zsh as default shell
   user: name="{{ developmentUser }}" shell=/bin/zsh
-  
+
 - name: Copy guake to autostart
   command: "cp /usr/share/applications/guake.desktop /etc/xdg/autostart/"
 
- 
+
 - name: download latest chrome
   get_url:
     url: https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
@@ -67,4 +73,3 @@
 - name: install latest chrome
   apt:
     deb: "/home/{{ developmentUser }}/chrome.deb"
-
