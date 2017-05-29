@@ -12,6 +12,7 @@
 - name: Install list of packages
   action: apt pkg={{item}} state=installed
   with_items:
+   - keepass2
    - tmux
    - zsh
    - htop
@@ -46,6 +47,10 @@
 
 - name: Copy .zshrc
   template: src=zsh.rc dest="/home/{{ developmentUser }}/.zshrc"
+
+
+- name: Copy .tmux.conf
+  template: src=.tmux.conf dest="/home/{{ developmentUser }}/.tmux.conf"
 
 - name: Wget theme
   get_url:

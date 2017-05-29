@@ -17,18 +17,18 @@
   apt:
     deb: "/home/{{ developmentUser }}/vagrant.deb"
 
-- name: install vagrant plugins
-  command: "vagrant plugin install vagrant-vbguest vagrant-share vagrant-ansible-local"
-  args:
-    chdir: /home/{{ developmentUser }}/work
-
 - name: check if jessie box was alrey added
-  command:  vagrant box list | grep -q "jobleadsDev_Debian_Jessie"
+  shell:  "vagrant box list | grep -q 'jobleadsDev_Debian_Jessie'"
   register: checkBoxExists
   always_run: true
-  ignore_errors: true
   changed_when: false
+  ignore_errors: yes
 
+- name: install vagrant plugins
+  command: "vagrant plugin install vagrant-vbguest vagrant-share vagrant-ansible-local"
+  when: checkBoxExists.rc == 0
+  args:
+    chdir: /home/{{ developmentUser }}/work
 
 - name: add standard vagrant box
   command: "vagrant box add http://www.jobleadshh.de/provisioning/debian_jessie_base.box --name jobleadsDev_Debian_Jessie"
