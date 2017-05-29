@@ -26,7 +26,7 @@
    - atop
    - ncdu
    - virtualbox
-   - adobereader-enu
+   #- adobereader-enu
    - atom
    - openssh-server
    - remmina

@@ -22,8 +22,45 @@
   args:
     chdir: /home/{{ developmentUser }}/work
 
+- name: check if jessie box was alrey added
+  command:  vagrant box list | grep -q "jobleadsDev_Debian_Jessie"
+  register: checkBoxExists
+  always_run: true
+  ignore_errors: true
+  changed_when: false
+
 
 - name: add standard vagrant box
   command: "vagrant box add http://www.jobleadshh.de/provisioning/debian_jessie_base.box --name jobleadsDev_Debian_Jessie"
+  when: checkBoxExists.rc == 0
   args:
     chdir: /home/{{ developmentUser }}/work
+
+- name: download vpn client from dell
+  get_url:
+    url: https://sslvpn.demo.sonicwall.com/NetExtender.x86_64.tgz
+    dest: "/home/{{ developmentUser }}/net_extender.tgz"
+    owner: "{{ developmentUser }}"
+    group: "{{ developmentUser }}"
+
+- name: link necessary object 1
+  file:
+    src: /lib/x86_64-linux-gnu/libssl.so.1.0.0
+    dest: /usr/lib/libssl.so.6
+    state: link
+
+- name: link necessary objects 2
+  file:
+    src: /lib/x86_64-linux-gnu/libcrypto.so.1.0.0
+    dest: /usr/lib/libcrypto.so.6
+    state: link
+
+- name: Unpack netextender
+  unarchive:
+    src: "/home/{{ developmentUser }}/net_extender.tgz"
+    dest: "/home/{{ developmentUser }}"
+    owner: "{{ developmentUser }}"
+    group: "{{ developmentUser }}"
+# ubunut 16.04
+# sudo ln -s /lib/i386-linux-gnu/libssl.so.1.0.0 /usr/lib/libssl.so.6
+# sudo ln -s /lib/i386-linux-gnu/libcrypto.so.1.0.0 /usr/lib/libcrypto.so.6
